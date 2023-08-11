@@ -1,38 +1,69 @@
-.App {
-  text-align: center;
+*
+{
+  margin: 0;
+  padding: 0;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Quiz Styles */
+.quiz-sec {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f0f0;
+}
+
+.quiz-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 400px;
+  max-width: 90%;
+}
+
+.instructions {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.quiz-container h3 {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.quiz-container label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.quiz-container input[type='radio'],
+.quiz-container input[type='checkbox'] {
+  margin-right: 8px;
+}
+
+.quiz-container button {
+  display: block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
   color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
 }
 
-.App-link {
-  color: #61dafb;
+.quiz-container button:hover {
+  background-color: #0056b3;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Final Score Styles */
+.final-score {
+  text-align: center;
+  font-size: 24px;
+  margin-top: 20px;
 }

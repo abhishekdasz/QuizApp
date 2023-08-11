@@ -1,39 +1,64 @@
 import React, { useState } from 'react'
 import { QuizData } from '../constants/QuizData';
+import '../App.css'
 
 const Quiz = () => {
     const [currQueIndex, setCurrQueIndex] = useState(0);
     const currentQue = QuizData[currQueIndex];
-    const [selectedOptionIndex, setSelectedOptionIndex] = useState(null);
+    const [selectedOptions, setSelectedOptions] = useState([]);
     const [score, setScore] = useState(0);
     const [submitted, setSubmitted] = useState(false);
 
+    const avg = (score/QuizData.length)*100;
+
+    const isOptionSelected = (option) => {
+        return selectedOptions.some((selectedOption) => selectedOption.id === option.id);
+    }
+
     const handleOptionChange = (optIndex) =>{
-        setSelectedOptionIndex(optIndex);
+        const option = currentQue.options[optIndex];
+        setSelectedOptions((prevSelectedOptions) => {
+            if (isOptionSelected(option)) 
+            {
+              return prevSelectedOptions.filter((selectedOption) => selectedOption.id !== option.id);
+            } 
+            else 
+            {
+              return [...prevSelectedOptions, option];
+            }
+        })
+        // setSelectedOptionIndex(optIndex);
     }
     const handleNextQue = () => {
-        if(selectedOptionIndex!==null)
+        if (selectedOptions.length === 0) {
+            alert("Please select at least one option before proceeding.");
+            return;
+        }
+        if (selectedOptions.length > 0) 
         {
-            const selectOption = currentQue.options[selectedOptionIndex];
-            if(selectOption.isCorrect)
-            {
-                setScore(score+1);
+            const question = QuizData[currQueIndex];
+            const allSelectedAreCorrect = selectedOptions.every((option) => option.isCorrect);
+            const allCorrectOptionsSelected = selectedOptions.length === question.options.filter(opt => opt.isCorrect).length;
+      
+            if (allSelectedAreCorrect && allCorrectOptionsSelected) {
+                setScore(score + 1);
             }
-            if(currQueIndex < QuizData.length-1)
-            {
-                setCurrQueIndex(currQueIndex+1);
-                setSelectedOptionIndex(null);
+      
+            if (currQueIndex < QuizData.length - 1) {
+                setCurrQueIndex(currQueIndex + 1);
+                setSelectedOptions([]);
             }
         }
     }
     const handleSubmitQuiz = () =>{
-        if(selectedOptionIndex !== null)
+        if (selectedOptions.length > 0) 
         {
-            const selectOption = currentQue.options[selectedOptionIndex];
-            if(selectOption.isCorrect)
+            const allCorrect = selectedOptions.every((option) => option.isCorrect);
+      
+            if (allCorrect) 
             {
-                setScore(score+1);
-            } 
+              setScore(score + 1);
+            }
         }
         setSubmitted(true);
     }
@@ -42,7 +67,10 @@ const Quiz = () => {
     {
         return(
             <div className='quiz-sec'>
-                <p> Final Score: {score} </p>
+                <div className="score">
+                    <p> Final Score: {score}/{QuizData.length} </p> <br />
+                    <p> Avg is: {avg}%  </p>
+                </div>
             </div>
         )
     }
@@ -52,21 +80,22 @@ const Quiz = () => {
   return (
     <div className='quiz-sec'>
         <div className="quiz-container">
+            <div className='instructions'> 
+                <p> Instruction: {currentQue.view ==='checkbox-opt' ? <> You can select multiple options </> : <> Choose the correct option only </>}  </p> 
+            </div>
             <h3> {currentQue.question} </h3>
-            {
-                currentQue.options.map((opt, index)=>(
-                    <label>
-                        <input 
-                            type="radio"
-                            name='answer'
-                            value={opt.id}
-                            checked={index === selectedOptionIndex} 
-                            onChange={()=>handleOptionChange(index)}
-                        />
-                        {opt.label}
-                    </label>
-                ))
-            }
+            {currentQue.options.map((opt, index) => (
+          <label key={opt.id}>
+            <input
+              type={currentQue.view === 'radio-opt' ? 'radio' : 'checkbox'}
+              name='answer'
+              value={opt.id}
+              checked={isOptionSelected(opt)}
+              onChange={() => handleOptionChange(index)}
+            />
+            {opt.label}
+          </label>
+        ))}
             {
                 currQueIndex < QuizData.length-1 ? 
                 ( <button onClick={handleNextQue}> Next </button> ) :
